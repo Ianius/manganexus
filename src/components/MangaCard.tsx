@@ -1,13 +1,13 @@
-import { ComponentType, ReactNode, useState } from "react";
+import { useState } from "react";
 import { useApiCall } from "../hooks/api";
 import { MangaFeedEndpoint, MangaImagesEndpoint } from "../interfaces/api";
 import { fetchChapterImages } from "../util/api";
 import { saveAs } from 'file-saver';
-import { HiDotsHorizontal } from 'react-icons/hi';
-import { BsArrowRight, BsArrowLeft } from 'react-icons/bs';
+import { GrDown, GrDownload } from 'react-icons/gr';
+
 import JSZip from "jszip";
-import { createPortal } from "react-dom";
 import PageNavigation from "./PageNavigation";
+import { BsDownload } from "react-icons/bs";
 
 interface Props {
     id: string;
@@ -71,6 +71,28 @@ const MangaCard = ({ id, title, coverUrl, description }: Props) => {
                         {isOpen ? "-" : "+"}
                     </h1>
                 </div>
+
+                {(download.inProgress) &&
+                    <>
+                        <div
+                            className='flex gap-2 items-center'
+                        >
+                            <BsDownload className='text-orange-500'/>
+                            <div>{title}.zip</div>
+                        </div>
+
+                        <div
+                            className='bg-zinc-400 rounded-md'
+                        >
+                            <div
+                                className='bg-blue-500 rounded-md h-[1em]'
+                                style={{
+                                    width: download.progress + "%"
+                                }}
+                            />
+                        </div>
+                    </>
+                }
             </div>
             
             {(chapters && isOpen) &&
@@ -80,10 +102,6 @@ const MangaCard = ({ id, title, coverUrl, description }: Props) => {
                         <div className='inline'>{" "}</div>
                         <div className='inline text-orange-500'>{title}</div>
                     </div>
-
-                    {download.inProgress &&
-                        <div>Download in progress: {download.progress}%</div>
-                    }
 
                     <div className='flex gap-2 justify-center items-center'>
                         <div>{amountSelected} chapters selected</div>
@@ -194,15 +212,11 @@ const MangaCard = ({ id, title, coverUrl, description }: Props) => {
                             })}
                     </div>
 
-                    <div
-                        className='flex flex-wrap justify-center items-center gap-4'
-                    >
-                        <PageNavigation
-                            page={page}
-                            totalPages={totalPages}
-                            setter={setPage}
-                        />
-                    </div>
+                    <PageNavigation
+                        page={page}
+                        totalPages={totalPages}
+                        setter={trySetPage}
+                    />
                 </>
             }
         </div>
