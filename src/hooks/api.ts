@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
+import { buildProxyUrl } from "../util/api";
 
 export const useApiCall = <T,>(url: string, isJson: boolean = true) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error>();
     const [result, setResult] = useState<T>();
-    const proxy = "https://corsproxy.io/?";
 
     useEffect(() => {
         setIsLoading(true);
         setError(undefined);
 
-        const query = fetch(proxy + url)
+        const query = fetch(buildProxyUrl(url))
             .then(res => {
                 if (isJson) return res.json() as Promise<T>
                 return res.text() as T;
