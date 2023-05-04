@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useApiCall } from "../hooks/api";
 import { MangaFeedEndpoint, MangaImagesEndpoint } from "../interfaces/api";
-import { buildProxyUrl, fetchChapterImages } from "../util/api";
+import { buildImageUrl, buildProxyUrl, fetchChapterImages } from "../util/api";
 import { saveAs } from 'file-saver';
 import { GrDown, GrDownload } from 'react-icons/gr';
 
@@ -133,7 +133,7 @@ const MangaCard = ({ id, title, coverUrl, description }: Props) => {
                                 const addToZip = async (zip: JSZip, name: string, url: string) => {
                                     // Download single file as blob and add it to zip file
 
-                                    const res = await fetch(buildProxyUrl(url));
+                                    const res = await fetch(buildImageUrl(url));
                                     const blob = await res.blob();
 
                                     zip.file(name, blob);
